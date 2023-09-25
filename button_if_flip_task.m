@@ -10,7 +10,8 @@ hyperBlockSize = 120; %.% the number of total trials during a run
 hyperWaiting = 3850/1000;
 hyperFixation = 300/1000;
 hyperStimulus = 500/1000;
-TR = input('Repetition time (TR) : ','s'); % ITIs will be randomly selected based on TR.
+
+TR = str2double(input('Repetition time (TR) : ','s'));% ITIs will be randomly selected based on TR.
 if TR == 1.5
     disp('TR = 1.50 sec.')
     hyperITI = [2200, 2200, 2200, 3750]/1000;
@@ -70,8 +71,9 @@ Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
 %% set key code
 flip = KbName('1');
 sync = KbName('s');
+finish = KbName('SPACE'); %.%
 
-RestrictKeysForKbCheck([flip sync]);
+RestrictKeysForKbCheck([flip sync finish]);
 
 %% waiting for start
 % present fixation
@@ -130,7 +132,9 @@ for p = 1:hyperBlockSize
     if WM_R(p,2) == 1
         Screen('DrawTexture', window, Ptarget, [], [], 0);
     else
-        Screen('DrawTexture', window, Ptarget, [], [], 0, rotate180)
+        
+        % Screen('DrawTexture', window, Ptarget, [], [], 0, rotate180)
+        Screen('DrawTexture', window, Ptarget, [], [], 0, 180)
     end
 
     DrawFormattedText(window, '+', 'center', 'center', black); %.% Por que este es aqui?
@@ -139,7 +143,7 @@ for p = 1:hyperBlockSize
     vbl = Screen('Flip', window, fvbl+hyperFixation); % Right after 300ms fixation
     
 %     send_trigger(daq_id, 0, 6, SADI);
-    disp(['this condition : ' checkCond]) %.% Is it ok?
+    disp(['This condition : ' num2str(WM_R(p,1)) 'th image/ flip condition :' num2str(WM_R(p,2))])
 
     % check WM reaction|save information
     done = 0;
@@ -181,11 +185,11 @@ for p = 1:hyperBlockSize
   
 end
 
-while done
-    if end_time - start_time == 0
-        done = 0;
-    end
-end
+% while done
+%     if end_time - start_time == 0
+%         done = 0;
+%     end
+% end
 
 sca;
 % ShowCursor;
